@@ -1,14 +1,16 @@
-import React, { Component } from "react";
-import "./App.css";
-import Navbar from "./components/layout/Navbar";
-import Users from "./components/users/Users";
-import Seach from "./components/users/Seach";
-import axios from "axios";
+import React, { Component } from 'react';
+import './App.css';
+import Navbar from './components/layout/Navbar';
+import Alert from './components/layout/Alert';
+import Users from './components/users/Users';
+import Seach from './components/users/Seach';
+import axios from 'axios';
 
 class App extends Component {
   state = {
     users: [],
-    loading: false
+    loading: false,
+    alert: null
   };
 
   // async componentDidMount() {
@@ -28,13 +30,32 @@ class App extends Component {
     this.setState({ users: res.data.items, loading: false });
   };
 
+  //Clear users
+  clearUsers = () => {
+    this.setState({ users: [], loading: false });
+  };
+
+  //Set alert
+  setAlert = (msg, type) => {
+    this.setState({ alert: { msg, type } });
+
+    setTimeout(() => this.setState({ alert: null }), 5000);
+  };
+
   render() {
+    const { users, loading } = this.state;
     return (
-      <div className="App">
+      <div className='App'>
         <Navbar />
-        <div className="container">
-          <Seach searchUsers={this.searchUsers} />
-          <Users loading={this.state.loading} users={this.state.users} />
+        <div className='container'>
+          <Alert alert={this.state.alert} />
+          <Seach
+            searchUsers={this.searchUsers}
+            clearUsers={this.clearUsers}
+            showClear={users.length > 0 ? true : false}
+            setAlert={this.setAlert}
+          />
+          <Users loading={loading} users={users} />
         </div>
       </div>
     );

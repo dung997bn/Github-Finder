@@ -1,7 +1,7 @@
-import React, { useReducer } from 'react';
-import axios from 'axios';
-import GithubContext from './githubContext';
-import GithubReducer from './githubReducer';
+import React, { useReducer } from "react";
+import axios from "axios";
+import GithubContext from "./githubContext";
+import GithubReducer from "./githubReducer";
 
 import {
   SEARCH_USERS,
@@ -9,9 +9,7 @@ import {
   CLEAR_USERS,
   GET_REPOS,
   SET_LOADING,
-  SET_ALERT,
-  REMOVE_ALERT
-} from '../types';
+} from "../types";
 
 const GithubState = props => {
   const initialState = {
@@ -46,6 +44,16 @@ const GithubState = props => {
   };
 
   //Get Repos
+  const getUserRepos = async username => {
+    setLoading();
+    const res = await axios.get(
+      `https://api.github.com/users/${username}/repos?per_page=5&sort=created:asc`
+    );
+    dispatch({
+      type: GET_REPOS,
+      payload: res.data
+    });
+  };
 
   //Clear User
   const clearUsers = () =>
@@ -64,7 +72,8 @@ const GithubState = props => {
         loading: state.loading,
         searchUsers,
         clearUsers,
-        getUser
+        getUser,
+        getUserRepos
       }}
     >
       {props.children}
